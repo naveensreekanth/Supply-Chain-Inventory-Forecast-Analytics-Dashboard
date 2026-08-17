@@ -1,77 +1,129 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import { RegionalTrendItem } from "@/types/supply-chain";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const data = [
-  { month: "Jan", north: 2400, south: 1800, east: 2200, west: 2000 },
-  { month: "Feb", north: 2200, south: 1900, east: 2100, west: 2100 },
-  { month: "Mar", north: 2600, south: 2100, east: 2400, west: 2200 },
-  { month: "Apr", north: 2800, south: 2300, east: 2500, west: 2400 },
-  { month: "May", north: 3000, south: 2400, east: 2700, west: 2500 },
-  { month: "Jun", north: 2900, south: 2500, east: 2600, west: 2600 },
-];
+interface RegionalTrendsChartProps {
+  data: RegionalTrendItem[];
+}
 
-export const RegionalTrendsChart = () => {
+export const RegionalTrendsChart = ({ data }: RegionalTrendsChartProps) => {
+  const [viewType, setViewType] = useState<"stacked" | "separate">("stacked");
+
   return (
-    <Card className="p-6">
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-foreground">Regional Inventory Trends</h3>
-        <p className="text-sm text-muted-foreground">Distribution across regional warehouses</p>
+    <Card className="p-6 border border-border/80 shadow-sm bg-card">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h3 className="text-base lg:text-lg font-semibold text-foreground">
+            Regional Inventory & Demand Distribution
+          </h3>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Throughput volume distributed across North, South, East, and West distribution hubs
+          </p>
+        </div>
+
+        <Tabs value={viewType} onValueChange={(v) => setViewType(v as "stacked" | "separate")}>
+          <TabsList className="h-8">
+            <TabsTrigger value="stacked" className="text-xs px-3">Stacked Area</TabsTrigger>
+            <TabsTrigger value="separate" className="text-xs px-3">Individual Trends</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
-      <ResponsiveContainer width="100%" height={300}>
-        <AreaChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-          <XAxis 
-            dataKey="month" 
+
+      <ResponsiveContainer width="100%" height={320}>
+        <AreaChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+          <defs>
+            <linearGradient id="colorNorth" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.7} />
+              <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.05} />
+            </linearGradient>
+            <linearGradient id="colorSouth" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.7} />
+              <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.05} />
+            </linearGradient>
+            <linearGradient id="colorEast" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.7} />
+              <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.05} />
+            </linearGradient>
+            <linearGradient id="colorWest" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="hsl(var(--chart-4))" stopOpacity={0.7} />
+              <stop offset="95%" stopColor="hsl(var(--chart-4))" stopOpacity={0.05} />
+            </linearGradient>
+          </defs>
+
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.7} />
+          <XAxis
+            dataKey="month"
             stroke="hsl(var(--muted-foreground))"
-            style={{ fontSize: '12px' }}
+            style={{ fontSize: "12px" }}
+            tickLine={false}
           />
-          <YAxis 
+          <YAxis
             stroke="hsl(var(--muted-foreground))"
-            style={{ fontSize: '12px' }}
+            style={{ fontSize: "12px" }}
+            tickLine={false}
+            tickFormatter={(val) => `${(val / 1000).toFixed(1)}k`}
           />
-          <Tooltip 
+          <Tooltip
             contentStyle={{
-              backgroundColor: 'hsl(var(--card))',
-              border: '1px solid hsl(var(--border))',
-              borderRadius: '8px',
+              backgroundColor: "hsl(var(--card))",
+              border: "1px solid hsl(var(--border))",
+              borderRadius: "8px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              fontSize: "12px",
             }}
+            formatter={(value: number, name: string) => [
+              `${value.toLocaleString()} units`,
+              name,
+            ]}
           />
-          <Legend />
-          <Area 
-            type="monotone" 
-            dataKey="north" 
-            stackId="1" 
-            stroke="hsl(var(--chart-1))" 
-            fill="hsl(var(--chart-1))"
-            fillOpacity={0.6}
-            name="North Region"
+          <Legend wrapperStyle={{ paddingTop: "12px", fontSize: "12px" }} />
+
+          <Area
+            type="monotone"
+            dataKey="north"
+            stackId={viewType === "stacked" ? "1" : undefined}
+            stroke="hsl(var(--chart-1))"
+            fill="url(#colorNorth)"
+            strokeWidth={2}
+            name="North Hub (Chicago)"
           />
-          <Area 
-            type="monotone" 
-            dataKey="south" 
-            stackId="1" 
-            stroke="hsl(var(--chart-2))" 
-            fill="hsl(var(--chart-2))"
-            fillOpacity={0.6}
-            name="South Region"
+          <Area
+            type="monotone"
+            dataKey="south"
+            stackId={viewType === "stacked" ? "1" : undefined}
+            stroke="hsl(var(--chart-2))"
+            fill="url(#colorSouth)"
+            strokeWidth={2}
+            name="South Hub (Dallas)"
           />
-          <Area 
-            type="monotone" 
-            dataKey="east" 
-            stackId="1" 
-            stroke="hsl(var(--chart-3))" 
-            fill="hsl(var(--chart-3))"
-            fillOpacity={0.6}
-            name="East Region"
+          <Area
+            type="monotone"
+            dataKey="east"
+            stackId={viewType === "stacked" ? "1" : undefined}
+            stroke="hsl(var(--chart-3))"
+            fill="url(#colorEast)"
+            strokeWidth={2}
+            name="East Hub (Allentown)"
           />
-          <Area 
-            type="monotone" 
-            dataKey="west" 
-            stackId="1" 
-            stroke="hsl(var(--chart-4))" 
-            fill="hsl(var(--chart-4))"
-            fillOpacity={0.6}
-            name="West Region"
+          <Area
+            type="monotone"
+            dataKey="west"
+            stackId={viewType === "stacked" ? "1" : undefined}
+            stroke="hsl(var(--chart-4))"
+            fill="url(#colorWest)"
+            strokeWidth={2}
+            name="West Hub (Reno)"
           />
         </AreaChart>
       </ResponsiveContainer>

@@ -1,73 +1,128 @@
-# Welcome to your Lovable project
+# Supply Chain & Inventory Forecast Analytics Dashboard
 
-## Project info
+An enterprise-grade supply chain intelligence and demand forecasting platform. Built with React, TypeScript, Vite, Tailwind CSS, Recharts, and shadcn/ui.
 
-**URL**: https://lovable.dev/projects/1bc4225d-5b0d-40fd-90f0-c9d8cd4d4b6a
+![Dashboard Preview](public/placeholder.svg)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## Key Features
 
-**Use Lovable**
+- **Executive KPI Dashboard**: Live tracking of Inventory Turnover, Forecast Accuracy (MAPE/Bias), Stockout Risk Rate, and Warehouse Efficiency.
+- **Demand Forecasting & Accuracy Engine**:
+  - Actual vs. Forecast demand comparison with monthly breakdown.
+  - Interactive Forecast Confidence Intervals (80% and 95% intervals).
+  - MAPE (Mean Absolute Percentage Error) and bias tracking over time.
+- **SKU Productivity & Inventory Health**:
+  - SKU productivity score ranking and turnover index.
+  - Multi-echelon stock health matrix with real-time risk indicators (*Critical*, *Low Stock*, *Optimal*, *Surplus*).
+  - Calculated Days of Supply (DOS), Reorder Points (ROP), and automated quick-reorder triggers.
+- **Regional Warehouse & Logistics Analytics**:
+  - Multi-region inventory trend tracking (North, South, East, West).
+  - Warehouse storage capacity utilization gauges and inbound/outbound fulfillment rates.
+- **Interactive "What-If" Scenario Simulator**:
+  - Dynamic simulation of supply chain shocks (lead time fluctuations, safety stock multipliers, demand surge).
+  - Live recalculation of projected stockout probability, service level, and inventory holding cost deltas.
+- **Data Export & Telemetry**:
+  - One-click CSV export of inventory health and forecast records.
+  - Comprehensive Light & Dark mode support.
+  - Dynamic filtering by Region, Product Category, and Time Horizon.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1bc4225d-5b0d-40fd-90f0-c9d8cd4d4b6a) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## Tech Stack
 
-**Use your preferred IDE**
+| Layer | Technologies |
+|---|---|
+| **Framework** | React 18, Vite 5, TypeScript |
+| **Styling** | Tailwind CSS, CSS Custom Properties (HSL Design Tokens), `lucide-react` |
+| **Data Visualization** | Recharts (Responsive Line, Area, Bar, and Composed Charts) |
+| **UI Components** | shadcn/ui (Radix UI Primitives, Badges, Tabs, Sliders, Dialogs, Tooltips) |
+| **State & Notifications** | TanStack React Query, Sonner & Toaster |
+| **Theming** | `next-themes` (Dark/Light/System) |
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Getting Started
 
-Follow these steps:
+### Prerequisites
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Ensure you have [Node.js](https://nodejs.org/) (version 18.0 or higher) and `npm` installed.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Installation
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/naveensreekanth/Supply-Chain-Inventory-Forecast-Analytics-Dashboard.git
+   cd Supply-Chain-Inventory-Forecast-Analytics-Dashboard
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:8080](http://localhost:8080) in your browser.
+
+4. **Build for production**:
+   ```bash
+   npm run build
+   ```
+
+5. **Preview production build**:
+   ```bash
+   npm run preview
+   ```
+
+---
+
+## Project Structure
+
+```
+├── public/                  # Static assets (favicons, robots.txt)
+├── src/
+│   ├── components/
+│   │   ├── dashboard/       # Specialized supply chain analytics components
+│   │   │   ├── DemandForecastChart.tsx    # Monthly demand vs forecast with CI bands
+│   │   │   ├── ForecastAccuracyChart.tsx  # MAPE & forecast bias tracker
+│   │   │   ├── Header.tsx                 # Navigation, global filters & actions
+│   │   │   ├── InventoryTable.tsx         # SKU stock health & reorder management
+│   │   │   ├── KPICard.tsx                # Metric cards with sentiment-aware trends
+│   │   │   ├── RegionalTrendsChart.tsx    # Multi-region warehouse distribution
+│   │   │   ├── ScenarioPlanner.tsx        # What-if supply chain simulation engine
+│   │   │   ├── SKUProductivityChart.tsx   # SKU performance & turnover metrics
+│   │   │   └── WarehouseCapacityChart.tsx # Facility storage & throughput gauges
+│   │   ├── theme-provider.tsx             # Dark/light mode theme provider
+│   │   └── ui/              # shadcn/ui reusable component library
+│   ├── data/
+│   │   └── mock-supply-chain-data.ts     # Realistic multi-region dataset & calculations
+│   ├── hooks/               # Custom React hooks
+│   ├── lib/                 # Utility functions & class merges
+│   ├── types/               # TypeScript interface definitions
+│   ├── App.tsx              # Root app component with providers & routing
+│   ├── index.css            # Design tokens & Tailwind layers
+│   └── main.tsx             # Application entry point
+├── package.json
+├── tailwind.config.ts
+├── tsconfig.json
+└── vite.config.ts
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Core Supply Chain Metrics & Formulas
 
-**Use GitHub Codespaces**
+- **Inventory Turnover Ratio**: $\text{ITR} = \frac{\text{Cost of Goods Sold (COGS)}}{\text{Average Inventory}}$
+- **Forecast Accuracy (MAPE)**: $\text{MAPE} = \frac{1}{n} \sum_{t=1}^{n} \left| \frac{A_t - F_t}{A_t} \right| \times 100\%$
+- **Reorder Point (ROP)**: $\text{ROP} = (\text{Average Daily Demand} \times \text{Lead Time}) + \text{Safety Stock}$
+- **Days of Supply (DOS)**: $\text{DOS} = \frac{\text{Current Stock Level}}{\text{Average Daily Demand}}$
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## License
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/1bc4225d-5b0d-40fd-90f0-c9d8cd4d4b6a) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project is licensed under the MIT License - see the LICENSE file for details.
